@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Quiz App</title>
+<style>
+  body {font-family: Arial, sans-serif; background:#111; color:#eee; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
+  .quiz {background:#222; padding:20px; border-radius:10px; width:320px; text-align:center;}
+  h2 {margin-bottom:10px;}
+  .btn {display:block; background:#333; color:#eee; border:none; padding:10px; margin:6px 0; border-radius:6px; cursor:pointer;}
+  .btn:hover {background:#444;}
+  #next-btn {margin-top:10px; background:#4caf50; display:none;}
+  .correct {background:#2e7d32 !important;}
+  .wrong {background:#c62828 !important;}
+</style>
+</head>
+<body>
+
+<div class="quiz">
+  <h2 id="question">Question text</h2>
+  <div id="answer-buttons"></div>
+  <button id="next-btn" class="btn">Next</button>
+</div>
+
+<script>
+const questions = [
+  {question: "What does DOM stand for?", answers:[
+    {text:"Document Object Model", correct:true},
+    {text:"Data Object Method", correct:false},
+    {text:"Display Object Mode", correct:false},
+    {text:"Document Order Model", correct:false}
+  ]},
+{question:"Which operator checks strict equality?", answers:[
+    {text:"===", correct:true}, {text:"==", correct:false}, {text:"=", correct:false}, {text:"!==", correct:false}
+  ]},
+  {question:"Which HTML tag links CSS?", answers:[
+    {text:"<link>", correct:true}, {text:"<style>", correct:false}, {text:"<script>", correct:false}, {text:"<css>", correct:false}
+  ]}
+];
+
+const qEl = document.getElementById("question");
+const ansBtns = document.getElementById("answer-buttons");
+const nextBtn = document.getElementById("next-btn");
+
+let currentQ = 0, score = 0;
+
+function startQuiz(){
+  currentQ = 0; score = 0;
+  nextBtn.innerText = "Next";
+  showQuestion();
+}
+
+function showQuestion(){
+  resetState();
+  let q = questions[currentQ];
+  qEl.innerText = q.question;
+  q.answers.forEach(a=>{
+    const btn=document.createElement("button");
+    btn.innerText=a.text;
+    btn.classList.add("btn");
+    btn.dataset.correct=a.correct;
+    btn.onclick=selectAnswer;
+    ansBtns.appendChild(btn);
+  });
+}
+
+function resetState(){
+  nextBtn.style.display="none";
+  ansBtns.innerHTML="";
+}
+function selectAnswer(e){
+  const selected = e.target;
+  const correct = selected.dataset.correct === "true";
+  if(correct) score++;
+  Array.from(ansBtns.children).forEach(btn=>{
+    if(btn.dataset.correct==="true") btn.classList.add("correct");
+    else btn.classList.add("wrong");
+    btn.disabled=true;
+  });
+  nextBtn.style.display="block";
+}
+
+function showScore(){
+  resetState();
+  qEl.innerText = `You scored ${score} / ${questions.length}!`;
+  nextBtn.innerText="Play Again";
+  nextBtn.style.display="block";
+}
+
+function handleNext(){
+  currentQ++;
+  currentQ < questions.length ? showQuestion() : showScore();
+}
+
+nextBtn.addEventListener("click", ()=>{
+  if(currentQ < questions.length) handleNext();
+  else startQuiz();
+});
+
+startQuiz();
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .gender {
+      display: flex;
+      gap: 15px;
+      margin-top: 5px;
+    }
+    .btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Student Registration Form</h2>
+  <form id="studentForm" onsubmit="return validateForm()">
+
+    <label>Enrollment Number:</label>
+    <input type="text" id="enroll" placeholder="e.g. 21BCS1234">
+    <p id="enrollError" class="error"></p>
+
+    <label>Full Name:</label>
+    <input type="text" id="name" placeholder="Enter your full name">
+    <p id="nameError" class="error"></p>
+
+    <label>Email ID:</label>
+    <input type="email" id="email" placeholder="e.g. student@example.com">
+    <p id="emailError" class="error"></p>
+
+    <label>Password:</label>
+    <input type="password" id="password" placeholder="Enter password">
+    <p id="passwordError" class="error"></p>
+
+    <label>Confirm Password:</label>
+    <input type="password" id="confirmPassword" placeholder="Confirm password">
+    <p id="confirmPasswordError" class="error"></p>
+
+    <label>Phone Number:</label>
+    <input type="text" id="phone" placeholder="10-digit mobile number">
+    <p id="phoneError" class="error"></p>
+
+    <label>Address:</label>
+    <textarea id="address" rows="3" placeholder="Enter your address"></textarea>
+    <p id="addressError" class="error"></p>
+
+    <label>Gender:</label>
+    <div class="gender">
+      <label><input type="radio" name="gender" value="Male"> Male</label>
+      <label><input type="radio" name="gender" value="Female"> Female</label>
+      <label><input type="radio" name="gender" value="Other"> Other</label>
+    </div>
+    <p id="genderError" class="error"></p>
+
+    <label>Branch:</label>
+    <select id="branch">
+      <option value="">--Select Branch--</option>
+      <option value="CSE">Computer Science</option>
+      <option value="ECE">Electronics</option>
+      <option value="ME">Mechanical</option>
+      <option value="CE">Civil</option>
+      <option value="EE">Electrical</option>
+    </select>
+    <p id="branchError" class="error"></p>
+
+    <button type="submit" class="btn">Submit</button>
+  </form>
+</div>
+
+<script>
+function validateForm() {
+  let valid = true;
+
+  // Clear old errors
+  document.querySelectorAll('.error').forEach(e => e.textContent = '');
+
+  // Get values
+  const enroll = document.getElementById('enroll').value.trim();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const confirmPassword = document.getElementById('confirmPassword').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const gender = document.querySelector('input[name="gender"]:checked');
+  const branch = document.getElementById('branch').value;
+
+  // Enrollment validation (e.g., must start with digits or letters and 8–10 chars)
+  const enrollPattern = /^[0-9A-Za-z]{8,12}$/;
+  if (!enroll.match(enrollPattern)) {
+document.getElementById('enrollError').textContent = "Invalid enrollment number.";
+    valid = false;
+  }
+
+  // Name validation
+  if (name === "") {
+    document.getElementById('nameError').textContent = "Name is required.";
+    valid = false;
+  }
+
+  // Email validation
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  if (!email.match(emailPattern)) {
+    document.getElementById('emailError').textContent = "Enter a valid email address.";
+    valid = false;
+  }
+
+  // Password validation
+  if (password.length < 6) {
+    document.getElementById('passwordError').textContent = "Password must be at least 6 characters.";
+    valid = false;
+  }
+
+  // Confirm password
+  if (password !== confirmPassword) {
+    document.getElementById('confirmPasswordError').textContent = "Passwords do not match.";
+    valid = false;
+  }
+
+  // Phone validation (must be 10 digits)
+  const phonePattern = /^[0-9]{10}$/;
+  if (!phone.match(phonePattern)) {
+    document.getElementById('phoneError').textContent = "Enter a valid 10-digit phone number.";
+    valid = false;
+  }
+
+  // Address validation
+  if (address === "") {
+    document.getElementById('addressError').textContent = "Address cannot be empty.";
+    valid = false;
+  }
+
+  // Gender validation
+  if (!gender) {
+    document.getElementById('genderError').textContent = "Please select your gender.";
+    valid = false;
+  }
+
+  // Branch validation
+  if (branch === "") {
+    document.getElementById('branchError').textContent = "Please select a branch.";
+    valid = false;
+  }
+
+  if (valid) {
+    alert("✅ Registration Successful!");
+  }
+
+  return valid; // prevent form submission if false
+}
+</script>
+
+</body>
+</html>
+
